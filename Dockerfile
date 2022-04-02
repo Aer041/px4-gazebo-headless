@@ -55,6 +55,8 @@ RUN pip3 install empy \
 RUN git clone https://github.com/Aer041/PX4-Autopilot.git ${FIRMWARE_DIR}
 RUN git -C ${FIRMWARE_DIR} checkout a41-hotfix_usb_disconnected
 RUN git -C ${FIRMWARE_DIR} submodule update --init --recursive
+RUN git fetch --all
+RUN git checkout tags/v1.10.1-0.2.0
 
 #COPY edit_rcS.bash ${WORKSPACE_DIR}
 #COPY entrypoint.sh /root/entrypoint.sh
