@@ -48,9 +48,16 @@ RUN git clone https://github.com/PX4/PX4-Autopilot.git ${FIRMWARE_DIR}
 RUN git -C ${FIRMWARE_DIR} checkout v1.13.0
 RUN git -C ${FIRMWARE_DIR} submodule update --init --recursive
 
-COPY edit_rcS.bash ${WORKSPACE_DIR}
+#COPY edit_rcS.bash ${WORKSPACE_DIR}
 COPY entrypoint.sh /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh
+
+# setup Gazebo env and update package path
+ENV SRC_DIR=${FIRMWARE_DIR}
+ENV BUILD_DIR=${FIRMWARE_DIR}/build/px4_sitl_default
+ENV GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH:${BUILD_DIR}/build_gazebo
+ENV GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:${SRC_DIR}/Tools/sitl_gazebo/models
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${BUILD_DIR}/build_gazebo
 
 RUN ["/bin/bash", "-c", " \
     cd ${FIRMWARE_DIR} && \
@@ -58,8 +65,8 @@ RUN ["/bin/bash", "-c", " \
     DONT_RUN=1 make px4_sitl gazebo \
 "]
 
-COPY sitl_rtsp_proxy ${SITL_RTSP_PROXY}
-RUN cmake -B${SITL_RTSP_PROXY}/build -H${SITL_RTSP_PROXY}
-RUN cmake --build ${SITL_RTSP_PROXY}/build
+#COPY sitl_rtsp_proxy ${SITL_RTSP_PROXY}
+#RUN cmake -B${SITL_RTSP_PROXY}/build -H${SITL_RTSP_PROXY}
+#RUN cmake --build ${SITL_RTSP_PROXY}/build
 
 ENTRYPOINT ["/root/entrypoint.sh"]
