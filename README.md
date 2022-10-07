@@ -1,6 +1,36 @@
 [![GitHub Actions Status](https://github.com/jonasvautherin/px4-gazebo-headless/workflows/Publish%20Docker/badge.svg?branch=master)](https://github.com/jonasvautherin/px4-gazebo-headless)[![Docker pulls](https://img.shields.io/docker/pulls/jonasvautherin/px4-gazebo-headless)](https://hub.docker.com/r/jonasvautherin/px4-gazebo-headless/)[![DockerHub version](https://img.shields.io/docker/v/jonasvautherin/px4-gazebo-headless/1.12.1)](https://hub.docker.com/r/jonasvautherin/px4-gazebo-headless/)
 
 
+# Aero41 setup
+
+## HITL
+
+### Installation
+To cross build and push on docker hub, first run qemu multiarch docker
+```
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+```
+And then build the containers with the name of the version
+```
+git checkout origin/a41-px4-hitl
+docker buildx build . --platform=linux/amd64,linux/arm64,linux/arm/v7 -t aero41/px4-gazebo-headless:hitl-<tag-name> --push
+```
+
+### Run
+
+To run the docker on your host machine in HITL. First plug the Pixhawk 4 already set in HITL mode. Then run the command below:
+```
+docker run --network host --rm --device /dev/ttyACM0:/dev/ttyACM0 -it aero41/px4-gazebo-headless:hitl-<tag-name>
+```
+
+
+## Firmware builder
+TODO
+```
+git checkout origin/a41_px4_builder
+```
+
+
 # PX4-Gazebo simulator (headless)
 
 ## Quickstart
